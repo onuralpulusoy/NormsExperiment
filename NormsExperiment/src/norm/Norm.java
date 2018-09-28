@@ -15,6 +15,13 @@ public class Norm {
 		return this.relType;
 	}
 	
+	public String getConType() {
+		return this.conType;
+	}
+	
+	public int getBehavior() {
+		return this.behavior;
+	}
 	
 
 }

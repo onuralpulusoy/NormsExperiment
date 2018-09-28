@@ -27,8 +27,8 @@ public class Agent {
 		norms.add(norm);
 	}
 	
-	public String getNorm() {
-		return this.norms.get(0).getRelType();
+	public ArrayList<Norm> getNorms() {
+		return this.norms;
 	}
 	
 }
