@@ -5,6 +5,7 @@ import java.util.Random;
 
 import agent.Agent;
 import content.Content;
+import content.Sentiment;
 import norm.Norm;
 
 
@@ -13,28 +14,39 @@ public class NormRunner {
 	
 	public static void main(String[] args) {
 		
-		//System.out.println("test");
-		//ArrayList<Norm> norms = new ArrayList<Norm>();
-		//Norm norm = new Norm ("friend","beach",0);
-		//Norm norm2 = new Norm ("colleague","beach",0);
-		//Agent agent = new Agent(1,"a",norms);
-		
-
-		//norms.add(norm2);
-		//norms.add(norm);
 		
 		ArrayList<Agent> agents = new ArrayList<Agent>();
-		//norms = new ArrayList<Norm>();
-		//norms.add(norm);
-		//Content content = new Content(1,"c");
-		//Agent agent2 = new Agent(1,"a2",norms);
+		agents = initAgents(agents);
+		ArrayList<Content> contents = new ArrayList<Content>();
+		contents = initContents(contents);
 		
-		//System.out.println(agent2.getAgentName());
-		//System.out.println(agent.getNorm());
-		//System.out.println(agent2.getNorm());
-		Norm norm = new Norm ("friend","beach",0);
-		Norm norm2 = new Norm ("friend","work",0);
-		Norm norm3 = new Norm ("friend","party",0);
+		for(int i=0;i<100;i++) {
+			System.out.println(agents.get(i).getAgentName());
+			for(int j=0;j<agents.get(i).getNorms().size();j++) {
+				System.out.println(agents.get(i).getNorms().get(j).getRelType() + "-" +
+						agents.get(i).getNorms().get(j).getConType() + "-" +
+						agents.get(i).getNorms().get(j).getBehavior() + "-");
+			}
+		}
+		
+		for(int i=0;i<1000;i++) {
+			System.out.println("Content " + i);
+			System.out.println("Coowners:");
+			for(int j=0;j<contents.get(i).getCoowners().size();j++) {
+				System.out.println(contents.get(i).getCoowners().get(j) + "-");
+			}
+			System.out.println("Sentiments:");
+			for(int j=0;j<contents.get(i).getSentiments().size();j++) {
+				System.out.println(contents.get(i).getSentiments().get(j).getSentimentType() + "-"
+						+ contents.get(i).getSentiments().get(j).getBelonginess());
+			}
+		}
+		
+
+		/*
+		Norm norm = new Norm (0,0,-1);
+		int rando = 0;
+		rando = new Random().nextInt(100);
 		
 		for(Integer i=0;i<100;i++){
 			
@@ -127,9 +139,72 @@ public class NormRunner {
 			if(normEmergence.get(i).getConType() == "party" && normEmergence.get(i).getBehavior() == 1)
 				party1++;
 		}
-		
 		System.out.println("beach: " + beach0 + " - " + beach1 + " - " + (float)((float)beach0/(float)(beach0+beach1)));
 		System.out.println("work: " + work0 + " - " + work1 + " - " + (float)((float)work0/(float)(work0+work1)));
 		System.out.println("party: " + party0 + " - " + party1 + " - " + (float)((float)party0/(float)(party0+party1)));
+		*/
+	}
+	
+	public static ArrayList<Agent> initAgents(ArrayList<Agent> agents){
+		
+		int relType = 0;
+		int randoConType = 0;
+		int randoDec = 0;
+		
+		int randoNormSize = 0;
+		
+		
+		for(Integer ac=0;ac<100;ac++) {
+			
+			randoNormSize = new Random().nextInt(5);
+			ArrayList<Norm> norms = new ArrayList<Norm>();
+			for(int i=0;i<randoNormSize;i++) {
+				randoConType = new Random().nextInt(5);
+				randoDec = new Random().nextInt(3) - 1;
+
+				Norm norm = new Norm (relType,randoConType,randoDec);
+				norms.add(norm);
+				
+			}
+
+			Agent agent = new Agent(ac,"a"+ac.toString(),norms);
+			agents.add(agent);
+		}
+		
+		return agents;
+	}
+	
+	public static ArrayList<Content> initContents(ArrayList<Content> contents){
+
+		int coOwnerSize = 0;
+		int agentID = 0;
+		int sentimentType = 0;
+		int belonginess = 0;
+		
+		for(Integer cc=0;cc<1000;cc++) {
+			
+			coOwnerSize = new Random().nextInt(3) + 2;
+			ArrayList<Integer> coOwners = new ArrayList<Integer>();
+			for(Integer i=0;i<coOwnerSize;i++) {
+				agentID = new Random().nextInt(100);
+				if(!coOwners.contains(agentID)) {
+					coOwners.add(agentID);
+				}
+				else {
+					i--;
+				}
+			}
+			
+			Content content = new Content(cc,coOwners);
+			
+			for(Integer i=0;i<3;i++) {
+				sentimentType = new Random().nextInt(5);
+				belonginess = new Random().nextInt(100);
+				Sentiment sentiment = new Sentiment(sentimentType,belonginess);
+				content.addSentiment(sentiment);
+			}
+			contents.add(content);
+		}
+		return contents;
 	}
 }

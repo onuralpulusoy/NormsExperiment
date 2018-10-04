@@ -1,21 +1,22 @@
 package norm;
 
 public class Norm {
-	String relType;
-	String conType;
+	int relType;
+	int conType;
+	//-1:share 0:indifferent 1:share
 	int behavior;
 	
-	public Norm(String relType,String conType, int behavior) {
+	public Norm(int relType,int conType, int behavior) {
 		this.relType = relType;
 		this.conType = conType;
 		this.behavior = behavior;
 	}
 	
-	public String getRelType() {
+	public int getRelType() {
 		return this.relType;
 	}
 	
-	public String getConType() {
+	public int getConType() {
 		return this.conType;
 	}
 	
