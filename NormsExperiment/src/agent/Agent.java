@@ -2,6 +2,7 @@ package agent;
 
 import java.util.ArrayList;
 import norm.Norm;
+import norm.pNorm;
 
 public class Agent {
 	
@@ -9,6 +10,7 @@ public class Agent {
 	String name;
 	ArrayList<AgentRelation> relations = new ArrayList<AgentRelation>();
 	ArrayList<Norm> norms = new ArrayList<Norm>();
+	ArrayList<pNorm> pNorms = new ArrayList<pNorm>();
 	
 	
 	
@@ -20,7 +22,11 @@ public class Agent {
 	}
 	
 	public String getAgentName() {
-		return name;
+		return this.name;
+	}
+	
+	public int getAgentID() {
+		return this.id;
 	}
 	
 	public void addNorm(Norm norm) {
@@ -29,6 +35,14 @@ public class Agent {
 	
 	public ArrayList<Norm> getNorms() {
 		return this.norms;
+	}
+	
+	public void addpNorm(pNorm pnorm) {
+		this.pNorms.add(pnorm);
+	}
+	
+	public ArrayList<pNorm> getpNorms() {
+		return this.pNorms;
 	}
 	
 }
