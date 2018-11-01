@@ -341,6 +341,7 @@ public class NormRunner {
 		
 		int pNormDecisions = 0;
 		int mNormDecisions = 0;
+		int sNormDecisions = 0;
 		
 		for(int i=0;i<contents.size();i++) {
 			action = -1;
@@ -351,6 +352,9 @@ public class NormRunner {
 
 			int pShare = 0;
 			int pNShare = 0;
+			
+			int sShare = 0;
+			int sNShare = 0;
 			
 			System.out.println("CONTENT " + i + "########################################################");
 			for(int j=0;j<contents.get(i).getCoowners().size();j++) {
@@ -388,6 +392,38 @@ public class NormRunner {
 				System.out.println("Content indecisive");
 			}
 			
+			if(action == -1) {
+				for(int j=0;j<contents.get(i).getCoowners().size();j++) {
+					for(int k=0;k<agents.size();k++) {
+						if(contents.get(i).getCoowners().get(j) == agents.get(k).getAgentID()) {
+							System.out.println("Agent " + agents.get(k).getAgentID() + ":");
+							int decision = checksNorms(agents.get(k), contents.get(i),sClasses);
+							if(decision == 0)
+								sNShare++;
+							if(decision == 1)
+								sShare++;
+						}
+					}
+				}
+				
+				
+				if(sNShare>sShare) {
+					notShared++;
+					System.out.println("Content not shared");
+					action = 0;
+					sNormDecisions++;
+				}
+				else if(sNShare<sShare) {
+					shared++;
+					System.out.println("Content shared");
+					action = 1;
+					sNormDecisions++;
+				}
+				else {
+					indecisive++;
+					System.out.println("Content indecisive");
+				}
+			}
 			
 			if(action == -1) {
 			for(int j=0;j<contents.get(i).getCoowners().size();j++) {
@@ -435,8 +471,12 @@ public class NormRunner {
 
 			}
 			
+			if((i % 250) == 0 && i > 100) {
+				System.out.println("SocialNormBase Size: " + sNormBase.size());
+				kMeans(sNormBase,sClasses);
+			}
 		}
-		System.out.println("mNorm: " + mNormDecisions + " pNorm: " + pNormDecisions);
+		System.out.println("mNorm: " + mNormDecisions + " pNorm: " + pNormDecisions + " sNorm: " + sNormDecisions);
 		//System.out.println("SocialNormBase Size: " + sNormBase.size());
 		//kMeans(sNormBase,sClasses);
 		for(int i=0;i<sNormBase.size();i++) {
@@ -444,28 +484,6 @@ public class NormRunner {
 			//System.out.println(sNormBase.get(i).getConType().get(0));
 		}
 		
-		System.out.println("SocialNormBase Size: " + sNormBase.size());
-		kMeans(sNormBase,sClasses);
-		
-		for(int i=9998;i<contents.size();i++) {
-			System.out.println("CONTENT " + i + "########################################################");
-			System.out.println(contents.get(i).getConType().get(0) + " - " +
-					contents.get(i).getConType().get(1) + " - " +
-					contents.get(i).getConType().get(2) + " - " +
-					contents.get(i).getConType().get(3) + " - " );
-			for(int j=0;j<contents.get(i).getCoowners().size();j++) {
-				for(int k=0;k<agents.size();k++) {
-					if(contents.get(i).getCoowners().get(j) == agents.get(k).getAgentID()) {
-						System.out.println("Agent " + agents.get(k).getAgentID() + ":");
-						int decision = checksNorms(agents.get(k), contents.get(i),sClasses);
-						if(decision == 0)
-							System.out.println("No share");
-						if(decision == 1)
-							System.out.println("Share");
-					}
-				}
-			}
-		}
 		
 		for(int i=0;i<sClasses.size();i++) {
 			System.out.println("***" + sClasses.get(i).getclassId());
@@ -494,7 +512,7 @@ public class NormRunner {
 	}
 	
 	public static int checkpNorms(Agent agent, Content content) {
-		
+		System.out.println("Checking pNorms");
 		float share =0;
 		float nShare=0;
 		
@@ -553,6 +571,7 @@ public class NormRunner {
 	
 
 	public static int checksNorms(Agent agent, Content content,ArrayList<SocialNormClasses> sClasses) {
+		System.out.println("Checking sNorms");
 		int closestClass = -1;
 		int distance = 99999;
 		int tempDistance;
@@ -582,16 +601,21 @@ public class NormRunner {
 			}
 		}
 		
-		if(sNormExists)
+		if(sNormExists) {
+			System.out.println("$$$$$$$$$$$$$$$$$$$$$$$Share sNorm found");
 			return 1;
-		if(nShNormExists)
+		}
+		if(nShNormExists) {
+			System.out.println("$$$$$$$$$$$$$$$$$$$$$$$Not Share sNorm found");
 			return 0;
+		}
 		
 		return -1;
 	}
 	
 	public static void kMeans(ArrayList<SocialNormBase> sNormBase, ArrayList<SocialNormClasses> sClasses) {
-		int countK = sNormBase.size() / 1000 + 1;
+		int countK = sNormBase.size() / (sNormBase.size()/5) + 1;
+		sClasses.clear();
 		System.out.println("Count k:"+ countK);
 		
 		int cCounter = 0;
@@ -631,10 +655,19 @@ for(int loop=0;loop<100&&swap;loop++) {
 				}
 			}
 			//System.out.println("Class " +i+ " size:"+ classSize);
+			if(classSize != 0) {
 			t1=t1/classSize;
 			t2=t2/classSize;
 			t3=t3/classSize;
 			t4=t4/classSize;
+			}
+			else {
+				classSize = 1;
+				t1=1;
+				t2=1;
+				t3=1;
+				t4=1;
+			}
 			//System.out.println("Dimension means: " + t1 + "-" + t2 + "-" + t3 + "-" + t4);
 			//actionPercentage.add(noShare*100/classSize);
 			//System.out.println("Action Percentage: " + noShare*100 / classSize);
@@ -665,7 +698,6 @@ for(int loop=0;loop<100&&swap;loop++) {
 				newClas.setPercentage(noShare*100 / classSize);
 				sClasses.add(newClas);
 			}
-			
 			conType.add(t1);
 			conType.add(t2);
 			conType.add(t3);
