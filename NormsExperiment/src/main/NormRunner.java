@@ -168,7 +168,11 @@ public class NormRunner {
 			ArrayList<Norm> norms = new ArrayList<Norm>();
 			for(int i=0;i<randoNormSize;i++) {
 				randoConType = new Random().nextInt(5);
-				randoDec = new Random().nextInt(2);
+				
+				if(new Random().nextInt(100) >60)
+					randoDec = 0;
+				else
+					randoDec = new Random().nextInt(2);
 
 				Boolean conTypeNormExists = false;
 				
@@ -305,7 +309,7 @@ public class NormRunner {
 		}
 		
 		System.out.println("SocialNormBase Size: " + sNormBase.size());
-		kMeans(sNormBase,sClasses);
+		//kMeans(sNormBase,sClasses);
 		for(int i=0;i<sNormBase.size();i++) {
 			//System.out.println(sNormBase.get(i).getKClass() + " - " + sNormBase.get(i).getAction());
 			//System.out.println(sNormBase.get(i).getConType().get(0));
@@ -472,8 +476,47 @@ public class NormRunner {
 			}
 			
 			if((i % 250) == 0 && i > 100) {
+
+				Boolean contin = true;
+				int sizeParam = 4;
+				while(contin) {
+				int normClCount = 0;
+				sizeParam++;
+				for(int k=0;k<sClasses.size();k++) {
+					if (sClasses.get(k).getPercentage() > 70 || sClasses.get(k).getPercentage() < 30)
+						normClCount++;
+					if (sClasses.get(k).getSize() < 100)
+						contin = false;
+				}
+				
+				if(normClCount>sClasses.size()/4 && sClasses.size()>1)
+					contin = false;
+				
+				sClasses.clear();
 				System.out.println("SocialNormBase Size: " + sNormBase.size());
-				kMeans(sNormBase,sClasses);
+				kMeans(sNormBase,sClasses,sizeParam);
+				}
+			}
+			if(i==9999) {
+				Boolean contin = true;
+				int sizeParam = 4;
+				while(contin) {
+				int normClCount = 0;
+				sizeParam++;
+				for(int k=0;k<sClasses.size();k++) {
+					if (sClasses.get(k).getPercentage() > 70 || sClasses.get(k).getPercentage() < 30)
+						normClCount++;
+					if (sClasses.get(k).getSize() < 100)
+						contin = false;
+				}
+				
+				if(normClCount>sClasses.size()/4 && sClasses.size()>1)
+					contin = false;
+
+				sClasses.clear();
+				System.out.println("SocialNormBase Size: " + sNormBase.size());
+				kMeans(sNormBase,sClasses,sizeParam);
+				}
 			}
 		}
 		System.out.println("mNorm: " + mNormDecisions + " pNorm: " + pNormDecisions + " sNorm: " + sNormDecisions);
@@ -489,6 +532,7 @@ public class NormRunner {
 			System.out.println("***" + sClasses.get(i).getclassId());
 			System.out.println(sClasses.get(i).getcT1mean() + " - " + sClasses.get(i).getcT2mean() + " - " + sClasses.get(i).getcT3mean() + " - " + sClasses.get(i).getcT4mean());
 			System.out.println(sClasses.get(i).getPercentage());
+			System.out.println(sClasses.get(i).getSize());
 		}
 		
 	}
@@ -613,9 +657,174 @@ public class NormRunner {
 		return -1;
 	}
 	
-	public static void kMeans(ArrayList<SocialNormBase> sNormBase, ArrayList<SocialNormClasses> sClasses) {
+	public static void kMeans(ArrayList<SocialNormBase> sNormBase, ArrayList<SocialNormClasses> sClasses,int sizeParam) {
+		int countK = sNormBase.size() / (sNormBase.size()/sizeParam) + 1;
+		System.out.println("Count k:"+ countK);
+		int cCounter = 0;
+		int clas = 0;
+		for(int i=0;i<sNormBase.size();i++) {
+			sNormBase.get(i).setKClass(clas);
+			cCounter++;
+			if(cCounter==(sNormBase.size()/countK)&&i<sNormBase.size()-countK) {
+				clas++;
+				cCounter = 0;
+			}
+		}
+	Boolean swap=true;	
+for(int loop=0;loop<100&&swap;loop++) {
+		ArrayList<Integer> actionPercentage = new ArrayList<Integer>();
+		ArrayList<ArrayList<Integer>> classDimensionMeans = new ArrayList<ArrayList<Integer>>();
+		//System.out.println("Loop #: " + loop);
+		for(int i=0;i<clas+1;i++) {
+			int classSize = 0;
+			int noShare = 0;
+			//actionPercentage.add(0);
+			ArrayList<Integer> conType = new ArrayList<Integer>();
+			int t1=0;
+			int t2=0;
+			int t3=0;
+			int t4=0;
+			//classDimensionMeans.add(conType);
+			for(int j=0;j<sNormBase.size();j++) {
+				if(sNormBase.get(j).getKClass() == i) {
+					classSize++;
+					if(sNormBase.get(j).getAction() == 0)
+						noShare++;
+					t1+=sNormBase.get(j).getConType().get(0);
+					t2+=sNormBase.get(j).getConType().get(1);
+					t3+=sNormBase.get(j).getConType().get(2);
+					t4+=sNormBase.get(j).getConType().get(3);
+				}
+			}
+			//System.out.println("Class " +i+ " size:"+ classSize);
+			if(classSize != 0) {
+			t1=t1/classSize;
+			t2=t2/classSize;
+			t3=t3/classSize;
+			t4=t4/classSize;
+			}
+			else {
+				classSize = 1;
+				t1=1;
+				t2=1;
+				t3=1;
+				t4=1;
+			}
+			//System.out.println("Dimension means: " + t1 + "-" + t2 + "-" + t3 + "-" + t4);
+			//actionPercentage.add(noShare*100/classSize);
+			//System.out.println("Action Percentage: " + noShare*100 / classSize);
+			
+			Boolean classExists = false;
+			int pickedClass = 0;
+			for(int k=0;k<sClasses.size();k++) {
+				if(i==sClasses.get(k).getclassId()) {
+					classExists = true;
+					pickedClass = i;
+				}
+			}
+			
+			if(classExists) {
+				sClasses.get(pickedClass).setcT1mean(t1);
+				sClasses.get(pickedClass).setcT2mean(t2);
+				sClasses.get(pickedClass).setcT3mean(t3);
+				sClasses.get(pickedClass).setcT4mean(t4);
+				sClasses.get(pickedClass).setPercentage(noShare*100 / classSize);
+				sClasses.get(pickedClass).setSize(classSize);
+			}
+			else {
+				SocialNormClasses newClas = new SocialNormClasses();
+				newClas.setclassId(i);;
+				newClas.setcT1mean(t1);
+				newClas.setcT2mean(t2);
+				newClas.setcT3mean(t3);
+				newClas.setcT4mean(t4);
+				newClas.setPercentage(noShare*100 / classSize);
+				newClas.setSize(classSize);
+				sClasses.add(newClas);
+			}
+			conType.add(t1);
+			conType.add(t2);
+			conType.add(t3);
+			conType.add(t4);
+			classDimensionMeans.add(conType);
+		}
+		//System.out.println(actionPercentage.size());
+		swap = false;
+		int swapCount = 0;
+		for(int i=0;i<sNormBase.size();i++) {
+			int lowestDif = 999;
+			for(int j=0;j<classDimensionMeans.size();j++) {
+				int dif = 0;
+				dif += Math.abs(sNormBase.get(i).getConType().get(0) - classDimensionMeans.get(j).get(0));
+				dif += Math.abs(sNormBase.get(i).getConType().get(1) - classDimensionMeans.get(j).get(1));
+				dif += Math.abs(sNormBase.get(i).getConType().get(2) - classDimensionMeans.get(j).get(2));
+				dif += Math.abs(sNormBase.get(i).getConType().get(3) - classDimensionMeans.get(j).get(3));
+				if(dif<lowestDif && sNormBase.get(i).getKClass()!=j) {
+					lowestDif = dif;
+					//System.out.println("Changed " + sNormBase.get(i).getKClass()+ " to " + j);
+					sNormBase.get(i).setKClass(j);
+					swap = true;
+					swapCount++;
+				}
+			}
+		}
+		//System.out.println("Swap count: " + swapCount);
+		
+	}
+		/*
+		actionPercentage = new ArrayList<Integer>();
+		classDimensionMeans = new ArrayList<ArrayList<Integer>>();
+		
+		for(int i=0;i<clas+1;i++) {
+			int classSize = 0;
+			int noShare = 0;
+			//actionPercentage.add(0);
+			ArrayList<Integer> conType = new ArrayList<Integer>();
+			int t1=0;
+			int t2=0;
+			int t3=0;
+			int t4=0;
+			//classDimensionMeans.add(conType);
+			for(int j=0;j<sNormBase.size();j++) {
+				if(sNormBase.get(j).getKClass() == i) {
+					classSize++;
+					if(sNormBase.get(j).getAction() == 0)
+						noShare++;
+					t1+=sNormBase.get(j).getConType().get(0);
+					t2+=sNormBase.get(j).getConType().get(1);
+					t3+=sNormBase.get(j).getConType().get(2);
+					t4+=sNormBase.get(j).getConType().get(3);
+				}
+			}
+			System.out.println("Class " +i+ " size:"+ classSize);
+			t1=t1/classSize;
+			t2=t2/classSize;
+			t3=t3/classSize;
+			t4=t4/classSize;
+			System.out.println("Dimension means: " + t1 + "-" + t2 + "-" + t3 + "-" + t4);
+			actionPercentage.add(noShare*100/classSize);
+			System.out.println("Action Percentage: " + noShare*100 / classSize);
+			conType.add(t1);
+			conType.add(t2);
+			conType.add(t3);
+			conType.add(t4);
+			classDimensionMeans.add(conType);
+		}
+		*/
+		
+	}
+	
+	public static void deepkMeans(ArrayList<SocialNormBase> sNormBase, ArrayList<SocialNormClasses> sClasses) {
+
+		ArrayList<SocialNormBase> tempNormBase = new ArrayList<SocialNormBase>();
+		for (int i=0;i<sNormBase.size();i++) {
+			tempNormBase.add(sNormBase.get(i));
+		}
+		System.out.println("Snormbases:"+ sNormBase.size());
+		tempNormBase.clear();
+		System.out.println("Ssnormbases:"+ sNormBase.size());
+		
 		int countK = sNormBase.size() / (sNormBase.size()/5) + 1;
-		sClasses.clear();
 		System.out.println("Count k:"+ countK);
 		
 		int cCounter = 0;
@@ -727,46 +936,6 @@ for(int loop=0;loop<100&&swap;loop++) {
 		//System.out.println("Swap count: " + swapCount);
 		
 	}
-		/*
-		actionPercentage = new ArrayList<Integer>();
-		classDimensionMeans = new ArrayList<ArrayList<Integer>>();
-		
-		for(int i=0;i<clas+1;i++) {
-			int classSize = 0;
-			int noShare = 0;
-			//actionPercentage.add(0);
-			ArrayList<Integer> conType = new ArrayList<Integer>();
-			int t1=0;
-			int t2=0;
-			int t3=0;
-			int t4=0;
-			//classDimensionMeans.add(conType);
-			for(int j=0;j<sNormBase.size();j++) {
-				if(sNormBase.get(j).getKClass() == i) {
-					classSize++;
-					if(sNormBase.get(j).getAction() == 0)
-						noShare++;
-					t1+=sNormBase.get(j).getConType().get(0);
-					t2+=sNormBase.get(j).getConType().get(1);
-					t3+=sNormBase.get(j).getConType().get(2);
-					t4+=sNormBase.get(j).getConType().get(3);
-				}
-			}
-			System.out.println("Class " +i+ " size:"+ classSize);
-			t1=t1/classSize;
-			t2=t2/classSize;
-			t3=t3/classSize;
-			t4=t4/classSize;
-			System.out.println("Dimension means: " + t1 + "-" + t2 + "-" + t3 + "-" + t4);
-			actionPercentage.add(noShare*100/classSize);
-			System.out.println("Action Percentage: " + noShare*100 / classSize);
-			conType.add(t1);
-			conType.add(t2);
-			conType.add(t3);
-			conType.add(t4);
-			classDimensionMeans.add(conType);
-		}
-		*/
-		
 	}
+	
 }

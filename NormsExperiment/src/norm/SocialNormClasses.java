@@ -7,6 +7,7 @@ public class SocialNormClasses {
 	int cT3mean;
 	int cT4mean;
 	int percentage;
+	int size;
 	
 	public SocialNormClasses() {
 		
@@ -32,6 +33,11 @@ public class SocialNormClasses {
 		this.percentage = percentage;
 	}
 	
+	public void setSize(int size) {
+		this.size = size;
+	}
+	
+	
 	public int getclassId() {
 		return this.classId;
 	}
@@ -50,5 +56,9 @@ public class SocialNormClasses {
 	}
 	public int getPercentage() {
 		return this.percentage;
+	}
+	
+	public int getSize() {
+		return this.size;
 	}
 }
