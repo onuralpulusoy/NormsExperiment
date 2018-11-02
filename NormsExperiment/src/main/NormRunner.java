@@ -51,7 +51,7 @@ public class NormRunner {
 			for(int i=0;i<randoNormSize;i++) {
 				randoConType = new Random().nextInt(5);
 				
-				if(new Random().nextInt(100) >80)
+				if(new Random().nextInt(100) >-1)
 					randoDec = 0;
 				else
 					randoDec = new Random().nextInt(2);
@@ -237,6 +237,10 @@ public class NormRunner {
 	    BufferedWriter bw = new BufferedWriter(fw);
 	    PrintWriter out = new PrintWriter(bw);
 	    
+	    FileWriter fw2 = new FileWriter("NormCount.txt", true);
+	    BufferedWriter bw2 = new BufferedWriter(fw2);
+	    PrintWriter out2 = new PrintWriter(bw2);
+	    
 	
 
 		
@@ -406,7 +410,7 @@ public class NormRunner {
 
 			}
 			
-			if((i % 250) == 0 && i > 100) {
+			if((i % 250) == 0 && i > 999) {
 
 				Boolean contin = true;
 				int sizeParam = 4;
@@ -444,7 +448,7 @@ public class NormRunner {
 				if(normClCount>sClasses.size()/4 && sClasses.size()>1)
 					contin = false;
 
-				sClasses.clear();
+				//sClasses.clear();
 				System.out.println("SocialNormBase Size: " + sNormBase.size());
 				kMeans(sNormBase,sClasses,sizeParam);
 				}
@@ -469,13 +473,17 @@ public class NormRunner {
 			//System.out.println(sNormBase.get(i).getConType().get(0));
 		}
 		
-		
+		int NormCluster = 0;
 		for(int i=0;i<sClasses.size();i++) {
 			System.out.println("***" + sClasses.get(i).getclassId());
 			System.out.println(sClasses.get(i).getcT1mean() + " - " + sClasses.get(i).getcT2mean() + " - " + sClasses.get(i).getcT3mean() + " - " + sClasses.get(i).getcT4mean());
 			System.out.println(sClasses.get(i).getPercentage());
+			if(sClasses.get(i).getPercentage()>66)
+				NormCluster++;
 			System.out.println(sClasses.get(i).getSize());
 		}
+		out2.println(sClasses.size()+","+NormCluster);
+		out2.close();
 		
 	}
 	
