@@ -34,6 +34,10 @@ public class Content {
 		return this.sentiments;
 	}
 	
+	public int getID() {
+		return this.id;
+	}
+	
 	public ArrayList<Integer> getCoowners() {
 		return this.coOwners;
 	}
@@ -45,6 +49,10 @@ public class Content {
 	
 	public int getHighestContentTypeIndex(){
 		return this.highestConTypeIndex;
+	}
+	
+	public void updateHighesContentType(int i){
+		this.highestConTypeIndex = i;
 	}
 	
 	public void updateContentTypes(ArrayList<Sentiment> sentiments){

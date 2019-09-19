@@ -6,8 +6,9 @@ public class SocialNormClasses {
 	int cT2mean;
 	int cT3mean;
 	int cT4mean;
-	int percentage;
+	float percentage;
 	int size;
+	int fDist = 0;
 	
 	public SocialNormClasses() {
 		
@@ -29,12 +30,20 @@ public class SocialNormClasses {
 	public void setcT4mean(int cT4mean) {
 		this.cT4mean = cT4mean;
 	}
-	public void setPercentage(int percentage) {
+	public void setPercentage(float percentage) {
 		this.percentage = percentage;
 	}
 	
 	public void setSize(int size) {
 		this.size = size;
+	}
+	
+	public void setFDist(int fDist) {
+		this.fDist = fDist;
+	}
+	
+	public int getFDist() {
+		return this.fDist;
 	}
 	
 	
@@ -54,7 +63,7 @@ public class SocialNormClasses {
 	public int getcT4mean() {
 		return this.cT4mean;
 	}
-	public int getPercentage() {
+	public float getPercentage() {
 		return this.percentage;
 	}
 	
