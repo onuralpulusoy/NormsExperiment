@@ -3,6 +3,11 @@ package norm;
 import java.util.ArrayList;
 
 public class SocialNormBase {
+	
+	//Commented by OU on 13/04/2020
+	//DESC:This class defines the s-norms according to the contextual clusters and relationship types between the agents
+	//An s-norm cluster can become normative or non-normative according to the previous privacy decisions within the cluster
+	
 	int majorRelationship = 0;
 	ArrayList<Integer> conType = new ArrayList<Integer>();
 	int action = -1;

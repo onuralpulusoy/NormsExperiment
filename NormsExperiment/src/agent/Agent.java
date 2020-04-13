@@ -6,6 +6,10 @@ import norm.pNorm;
 
 public class Agent {
 	
+	//Commented by OU on 13/04/2020
+	//DESC:Agent is a class to store and process information about privacy agents
+	//Agents store m-norms and p-norms when instantiated with this class
+	
 	int id;
 	String name;
 	ArrayList<AgentRelation> relations = new ArrayList<AgentRelation>();

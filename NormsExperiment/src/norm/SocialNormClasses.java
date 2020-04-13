@@ -1,6 +1,11 @@
 package norm;
 
 public class SocialNormClasses {
+	
+	//Commented by OU on 13/04/2020
+	//DESC:A utility class for s-norms. Stores information about s-norm clusters for quicker computation
+	//ToDo: Going to be updated for high number of contextual descriptors
+	
 	int classId;
 	int cT1mean;
 	int cT2mean;

@@ -18,7 +18,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-
+//Commented by OU on 13/04/2020
+//DESC:Main norm simulation runner class that initializes the agents, content co-owned by the agent and makes privacy decisions over them
+//The decisions can be normative or non-normative, user should call the related function for picking one
 
 public class NormRunner {
 	public static void main(String[] args) throws IOException {
@@ -30,6 +32,7 @@ public class NormRunner {
 		ArrayList<Content> contents = new ArrayList<Content>();
 		contents = initContents(contents);
 		
+		//runWithNorms runs the simulations with norms enabled, while runWithoutNorms makes privacy decisions according to majority
 		//runWithoutNorms(agents,contents,sNormBase,sClasses);
 		runWithNorms(agents,contents,sNormBase,sClasses);
 		
@@ -43,9 +46,10 @@ public class NormRunner {
 		
 		int randoNormSize = 0;
 		
-		
+		//Initialization of the agents, the number (currently 100) for FOR loop determines the number of agents
 		for(Integer ac=0;ac<100;ac++) {
 			
+			//Each agent is assigned
 			randoNormSize = new Random().nextInt(5);
 			ArrayList<Norm> norms = new ArrayList<Norm>();
 			for(int i=0;i<randoNormSize;i++) {

@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Content {
+	
+	
+	//Commented by OU on 13/04/2020
+	//DESC:Variables and methods for social media content
+	//Content have co-owners as agents in the simulation, sentiments which contain content descriptors
 
 	int id;
 	int highestConTypeIndex = -1;
